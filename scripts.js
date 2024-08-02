@@ -38,3 +38,39 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
+document.querySelectorAll('.video-thumbnail').forEach(thumbnail => {
+    thumbnail.addEventListener('click', () => {
+        const videoUrl = thumbnail.getAttribute('data-video-url');
+        const videoType = thumbnail.getAttribute('data-video-type');
+        const modal = document.createElement('div');
+        modal.className = 'modal fade';
+        let videoIframe = '';
+        if (videoType === 'youtube') {
+            videoIframe = `<iframe class="embed-responsive-item" src="${videoUrl}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+        } else if (videoType === 'local') {
+            videoIframe = `<video class="embed-responsive-item" controls><source src="${videoUrl}" type="video/mp4">Your browser does not support the video tag.</video>`;
+        }
+        modal.innerHTML = `
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="embed-responsive embed-responsive-16by9">
+                            ${videoIframe}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+        $(modal).modal('show');
+        $(modal).on('hidden.bs.modal', () => {
+            document.body.removeChild(modal);
+        });
+    });
+});
